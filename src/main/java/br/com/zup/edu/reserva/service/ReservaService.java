@@ -7,8 +7,10 @@ import br.com.zup.edu.reserva.model.Reserva;
 import br.com.zup.edu.reserva.respository.QuartoRepository;
 import br.com.zup.edu.reserva.respository.ReservaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
@@ -24,12 +26,7 @@ public class ReservaService {
     private ReservaRepository reservaRepository;
 
     public ResponseEntity<?> cadastraService(ReservaRequest reservaRequest, Long id, UriComponentsBuilder uriComponentsBuilder) {
-        Optional<Quarto> possivelQuarto = quartoRepository.findById(id);
-
-        if(possivelQuarto.isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
-        Quarto quarto = possivelQuarto.get();
+        Quarto quarto = quartoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,"Quarto não encontrado"));
 
         if(quarto.getReservado()){
             return ResponseEntity.unprocessableEntity().body("Este quarto já foi reservado");
@@ -45,12 +42,13 @@ public class ReservaService {
     }
 
     public ResponseEntity<?> consultaReserva(Long id) {
-        Reserva reserva = reservaRepository.findById(id).get();
+
+        Reserva reserva = reservaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reserva não encontrada"));
         return ResponseEntity.ok().body(new ReservaResponse(reserva));
     }
 
     public ResponseEntity<?> consultaTodasReservas() {
         List<Reserva> reservas = reservaRepository.findAll();
-        return ResponseEntity.ok().body(new ReservaResponse().buscaReservas(reservas));
+        return reservas.isEmpty() ? ResponseEntity.notFound().build() : ResponseEntity.ok().body(new ReservaResponse().buscaReservas(reservas));
     }
 }
