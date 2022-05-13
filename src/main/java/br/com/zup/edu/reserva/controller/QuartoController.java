@@ -1,10 +1,8 @@
 package br.com.zup.edu.reserva.controller;
 
 import br.com.zup.edu.reserva.dto.QuartoRequest;
-import br.com.zup.edu.reserva.dto.ReservaRequest;
 
-import br.com.zup.edu.reserva.model.Quarto;
-import br.com.zup.edu.reserva.respository.QuartoRepository;
+import br.com.zup.edu.reserva.service.QuartoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,15 +17,10 @@ import javax.validation.Valid;
 public class QuartoController {
 
     @Autowired
-    private QuartoRepository quartoRepository;
+    private QuartoService quartoService;
 
     @PostMapping
-    public ResponseEntity<?> cadastraQuarto(@RequestBody @Valid QuartoRequest quartoRequest){
-
-        Quarto quarto = quartoRequest.toMOdel();
-        quartoRepository.save(quarto);
-
-        return ResponseEntity.ok().body("Quarto cadastrada com sucesso");
-
+    public ResponseEntity<?> salvaQuarto(@RequestBody @Valid QuartoRequest quartoRequest){
+        return quartoService.cadastraQuarto(quartoRequest);
     }
 }

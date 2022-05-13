@@ -10,7 +10,4 @@ import java.util.Optional;
 
 @Repository
 public interface QuartoRepository extends JpaRepository<Quarto, Long> {
-
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<Quarto> findById(Long id);
 }

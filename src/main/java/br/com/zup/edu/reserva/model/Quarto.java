@@ -24,6 +24,9 @@ public class Quarto {
     @Column(nullable = false)
     private Boolean isReservado = false;
 
+    @Version
+    int version;
+
     @Deprecated
     public Quarto(){
 
