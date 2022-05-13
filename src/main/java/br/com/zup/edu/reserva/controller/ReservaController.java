@@ -26,11 +26,11 @@ public class ReservaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscaReserva(@PathVariable Long id){
-        return reservaService.consultaReserva(id);
+        return reservaService.consultaQuarto(id);
     }
 
     @GetMapping()
     public ResponseEntity<?> buscaTodasReservas(){
-       return reservaService.consultaTodasReservas();
+       return reservaService.consultaTodosQuartos();
     }
 }

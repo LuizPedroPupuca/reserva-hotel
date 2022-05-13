@@ -4,6 +4,11 @@ import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.PERSIST;
 
 @Entity
 public class Quarto {
@@ -12,12 +17,17 @@ public class Quarto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToMany(mappedBy = "quarto", cascade = {PERSIST,MERGE})
+    private List<Reserva> reservas = new ArrayList<>();
+
+
     @Column(nullable = false)
     private String descricao;
 
     @Column(nullable = false)
     private BigDecimal diaria;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TipoQuarto tipoQuarto;
 
@@ -40,6 +50,14 @@ public class Quarto {
 
     public Long getId() {
         return id;
+    }
+
+    public List<Reserva> getReservas() {
+        return reservas;
+    }
+
+    public void adicionaReserva(Reserva reserva){
+        this.reservas.add(reserva);
     }
 
     public String getDescricao() {
